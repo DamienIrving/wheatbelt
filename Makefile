@@ -1,17 +1,42 @@
-.PHONY: final_analysis help
+.PHONY: process-obs process-forecast bias-correction similarity-test independence-test define-regions final-analysis help
 
 include ${CONFIG}
 
 PYTHON=/g/data/xv83/dbi599/miniconda3/envs/unseen/bin/python
-PLOT_PARAMS=${CONFIG_DIR}/plotparams_publication.yml
+PLOT_PARAMS=plotparams_publication.yml
 	
-## define_regions : define the wheat-sheep regions
-define_regions : define_regions.ipynb
+## process-obs : preprocessing of observational data
+process-obs : ${OBS_PROCESSED_FILE}
+${OBS_PROCESSED_FILE} : ${OBS_DATA} ${OBS_METADATA}
+	${PYTHON} preprocess.py $< obs $@ --metadata_file $(word 2,$^) ${OBS_IO_OPTIONS}
+
+## process-forecast : preprocessing of CAFE forecast ensemble
+process-forecast : ${FCST_ENSEMBLE_FILE}
+${FCST_ENSEMBLE_FILE} : ${FCST_METADATA}
+	${PYTHON} preprocess.py ${FCST_DATA} forecast $@ --metadata_file $< ${FCST_IO_OPTIONS} --reset_times --output_chunks lead_time=50 --dask_config ${DASK_CONFIG}
+
+## bias-correction : bias corrected forecast data using observations
+bias-correction : ${FCST_BIAS_FILE}
+${FCST_BIAS_FILE} : ${FCST_ENSEMBLE_FILE} ${OBS_PROCESSED_FILE}
+	${PYTHON} bias_correct.py $< $(word 2,$^) ${VAR} ${BIAS_METHOD} $@ --base_period ${BASE_PERIOD}
+
+## similarity-test : similarity test between observations and bias corrected forecast
+similarity-test : ${SIMILARITY_FILE}
+${SIMILARITY_FILE} : ${FCST_BIAS_FILE} ${OBS_PROCESSED_FILE}
+	${PYTHON} similarity_test.py $< $(word 2,$^) ${VAR} $@ --reference_time_period ${BASE_PERIOD}
+
+## independence-test : independence test for different lead times
+independence-test : ${INDEPENDENCE_PLOT}
+${INDEPENDENCE_PLOT} : ${FCST_BIAS_FILE}
+	${PYTHON} independence_test.py $< ${VAR} $@ ${INDEPENDENCE_OPTIONS}
+
+## define-regions : define the wheat-sheep regions
+define-regions : define_regions.ipynb
 define_regions.ipynb : abares.zip ${FCST_CLIMATOLOGY}
 	papermill -p abares_shapefile $< -p agcd_file ${OBS_DATA} -p agcd_config ${OBS_METADATA} $@ $@
 
-## final_analysis : do the final analysis
-final_analysis : ag_analysis_${SUB_REGION}.ipynb
+## final-analysis : do the final analysis
+final-analysis : ag_analysis_${SUB_REGION}.ipynb
 ag_analysis_${SUB_REGION}.ipynb : ag_analysis.ipynb    
 	papermill -p agcd_file ${OBS_PROCESSED_FILE} -p cafe_file ${FCST_ENSEMBLE_FILE} -p cafe_bc_file ${FCST_BIAS_FILE} -p fidelity_file ${SIMILARITY_FILE} -p independence_plot ${INDEPENDENCE_PLOT} -p region ${SUB_REGION} $< $@
 
@@ -21,4 +46,3 @@ help :
 	@echo ''
 	@echo 'valid targets:'
 	@grep -h -E '^##' ${MAKEFILE_LIST} | sed -e 's/## //g' | column -t -s ':'
-
