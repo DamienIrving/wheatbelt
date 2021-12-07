@@ -22,12 +22,12 @@ ${FCST_BIAS_FILE} : ${FCST_ENSEMBLE_FILE} ${OBS_PROCESSED_FILE}
 ## similarity-test : similarity test between observations and bias corrected forecast
 similarity-test : ${SIMILARITY_FILE}
 ${SIMILARITY_FILE} : ${FCST_BIAS_FILE} ${OBS_PROCESSED_FILE}
-	similarity_test $< $(word 2,$^) ${VAR} $@ --reference_time_period ${BASE_PERIOD}
+	similarity $< $(word 2,$^) ${VAR} $@ --reference_time_period ${BASE_PERIOD}
 
 ## independence-test : independence test for different lead times
 independence-test : ${INDEPENDENCE_PLOT}
 ${INDEPENDENCE_PLOT} : ${FCST_BIAS_FILE}
-	independence_test $< ${VAR} $@ ${INDEPENDENCE_OPTIONS}
+	independence $< ${VAR} $@ ${INDEPENDENCE_OPTIONS}
 
 ## define-regions : define the wheat-sheep regions
 define-regions : define_regions.ipynb
