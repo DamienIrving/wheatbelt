@@ -18,7 +18,7 @@ BASE_PERIOD=1990-01-01 2019-12-31
 GENERAL_IO_OPTIONS=--variables ${VAR} --spatial_coords -44 -11 113 154 --units ${UNITS}
 TIME_IO_OPTIONS=--time_freq ${TIME_FREQ} --time_agg ${TIME_AGG} --complete_time_agg_periods 
 SPATIAL_IO_OPTIONS=--shapefile ${SHAPEFILE} --shp_header ${SHP_HEADER} --combine_shapes --spatial_agg ${SPATIAL_AGG}
-FCST_IO_OPTIONS=${GENERAL_IO_OPTIONS} 
+FCST_IO_OPTIONS=${GENERAL_IO_OPTIONS} ${TIME_IO_OPTIONS} ${SPATIAL_IO_OPTIONS}
 OBS_IO_OPTIONS=${FCST_IO_OPTIONS} --input_freq M
 
 FCST_DATA := $(sort $(wildcard /g/data/xv83/dcfp/CAFE-f6/c5-d60-pX-f6-*/atmos_isobaric_daily.zarr.zip))
