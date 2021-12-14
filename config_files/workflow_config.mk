@@ -36,7 +36,7 @@ SIMILARITY_FILE=/g/data/xv83/dbi599/ag/data/ks-test_${VAR}_cafe-c5-d60-pX-f6_199
 INDEPENDENCE_PLOT=/g/data/xv83/dbi599/ag/figures/independence-test_${VAR}_cafe-c5-d60-pX-f6_19900501-20191101_${TIME_FREQ}-${TIME_AGG}_${REGION}-${SUB_REGION}-${SPATIAL_AGG}_bias-corrected-agcd-${BIAS_METHOD}.png
 INDEPENDENCE_OPTIONS=--spatial_selection region=${SUB_REGION} --lead_time_increment 1
 
-DASK_CONFIG=/home/599/dbi599/unseen/config/dask_local.yml
+DASK_CONFIG=dask_local.yml
 
 
 

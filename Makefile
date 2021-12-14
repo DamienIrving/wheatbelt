@@ -7,12 +7,12 @@ PLOT_PARAMS=plotparams_publication.yml
 ## process-obs : preprocessing of observational data
 process-obs : ${OBS_PROCESSED_FILE}
 ${OBS_PROCESSED_FILE} : ${OBS_DATA} ${OBS_METADATA}
-	fileio $< obs $@ --metadata_file $(word 2,$^) ${OBS_IO_OPTIONS}
+	fileio $< $@ --metadata_file $(word 2,$^) ${OBS_IO_OPTIONS}
 
 ## process-forecast : preprocessing of CAFE forecast ensemble
 process-forecast : ${FCST_ENSEMBLE_FILE}
 ${FCST_ENSEMBLE_FILE} : ${FCST_METADATA}
-	fileio ${FCST_DATA} forecast $@ --metadata_file $< ${FCST_IO_OPTIONS} --reset_times --output_chunks lead_time=50 --dask_config ${DASK_CONFIG}
+	fileio ${FCST_DATA} $@ --forecast --metadata_file $< ${FCST_IO_OPTIONS} --reset_times --output_chunks lead_time=50 --dask_config ${DASK_CONFIG}
 
 ## bias-correction : bias corrected forecast data using observations
 bias-correction : ${FCST_BIAS_FILE}
