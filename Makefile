@@ -17,7 +17,7 @@ ${FCST_ENSEMBLE_FILE} : ${FCST_METADATA}
 ## bias-correction : bias corrected forecast data using observations
 bias-correction : ${FCST_BIAS_FILE}
 ${FCST_BIAS_FILE} : ${FCST_ENSEMBLE_FILE} ${OBS_PROCESSED_FILE}
-	bias_correction $< $(word 2,$^) ${VAR} ${BIAS_METHOD} $@ --base_period ${BASE_PERIOD}
+	bias_correction $< $(word 2,$^) ${VAR} ${BIAS_METHOD} $@ --base_period ${BASE_PERIOD} --rounding_freq A
 
 ## similarity-test : similarity test between observations and bias corrected forecast
 similarity-test : ${SIMILARITY_FILE}

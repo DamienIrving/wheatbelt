@@ -36,7 +36,7 @@ FCST_BIAS_FILE=/g/data/xv83/dbi599/ag/data/${VAR}_cafe-c5-d60-pX-f6_19950501-201
 SIMILARITY_FILE=/g/data/xv83/dbi599/ag/data/ks-test_${VAR}_cafe-c5-d60-pX-f6_19950501-20191101_${TIME_FREQ}-${TIME_AGG}_${REGION}-${SPATIAL_AGG}_bias-corrected-agcd-${BIAS_METHOD}.zarr.zip
 
 INDEPENDENCE_PLOT=/g/data/xv83/dbi599/ag/figures/independence-test_${VAR}_cafe-c5-d60-pX-f6_19950501-20191101_${TIME_FREQ}-${TIME_AGG}_${REGION}-${SUB_REGION}-${SPATIAL_AGG}_bias-corrected-agcd-${BIAS_METHOD}.png
-INDEPENDENCE_OPTIONS=--spatial_selection region=${SUB_REGION} --lead_time_increment 1
+INDEPENDENCE_OPTIONS=--spatial_selection region=${SUB_REGION}
 
 DASK_CONFIG=dask_local.yml
 
